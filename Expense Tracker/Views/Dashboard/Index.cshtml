@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["isDashboard"] = true;
+}
+
+@*Summary Widgets*@
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="d-flex flex-row widget summary income" style="background-color: #e1bee7;">
+            <div class="d-flex flex-column justify-content-center p-5">
+                <i class="fa-solid fa-dollar-sign fa-2xl" style="color: #8e24aa;"></i>
+            </div>
+            <div class="d-flex flex-column m-auto py-3">
+                <span class="lead" style="color: #4a148c;">Total Income</span>
+                <h1 class="display-6 fw-bold" style="color: #6a1b9a;">@ViewBag.TotalIncome</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="d-flex flex-row widget summary expense" style="background-color: #ffecb3;">
+            <div class="d-flex flex-column justify-content-center p-5">
+                <i class="fa-solid fa-dollar-sign fa-2xl" style="color: #ffb300;"></i>
+            </div>
+            <div class="d-flex flex-column m-auto py-3">
+                <span class="lead" style="color: #ff8f00;">Total Expense</span>
+                <h1 class="display-6 fw-bold" style="color: #ff6f00;">@ViewBag.TotalExpense</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="d-flex flex-row widget summary balance" style="background-color: #b2ebf2;">
+            <div class="d-flex flex-column justify-content-center p-5">
+                <i class="fa-solid fa-dollar-sign fa-2xl" style="color: #00acc1;"></i>
+            </div>
+            <div class="d-flex flex-column m-auto py-3">
+                <span class="lead" style="color: #00838f;">Balance</span>
+                <h1 class="display-6 fw-bold" style="color: #006064;">@ViewBag.Balance</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Doughnut and Spline Chart*@
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="widget chart" style="background-color: #c8e6c9;">
+            <div class="p-4">
+                <h5 class="fw-bold" style="color: #1b5e20;">Expense By Category</h5>
+            </div>
+            <ejs-accumulationchart id="doughnutchart" enableSmartLabels background="#c8e6c9">
+                <e-accumulation-series-collection>
+                    <e-accumulation-series dataSource="@ViewBag.DoughnutChartData"
+                                           xName="categoryTitleWithIcon" yName="amount"
+                                           innerRadius="60%" legendShape="Circle" 
+                                           palettes=@(new string[]{"#ff8a80", "#80d8ff", "#ffff8d", "#ccff90", "#cf94da"})>
+                        <e-accumulationseries-datalabel name="formattedAmount" visible></e-accumulationseries-datalabel>
+                    </e-accumulation-series>
+                </e-accumulation-series-collection>
+                <e-accumulationchart-legendsettings position="Top" toggleVisibility="false">
+                    <e-legendsettings-textstyle color="#1b5e20" size="1rem"></e-legendsettings-textstyle>
+                </e-accumulationchart-legendsettings>
+                <e-accumulationchart-tooltipsettings enable></e-accumulationchart-tooltipsettings>
+            </ejs-accumulationchart>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="widget chart" style="background-color: #ffccbc;">
+            <div class="p-4">
+                <h5 class="fw-bold" style="color: #bf360c;">Income vs Expense</h5>
+            </div>
+            <ejs-chart id="spline-chart" background="#ffccbc"
+                       palettes=@(new string[]{"#aed581", "#ba68c8"})>
+                <e-chart-primaryxaxis valueType="Category">
+                    <e-majorgridlines width="0"></e-majorgridlines>
+                    <e-majorticklines width="0"></e-majorticklines>
+                </e-chart-primaryxaxis>
+                <e-chart-primaryyaxis>
+                    <e-majorgridlines width="1" color="#ffe082" dashArray="3,5"></e-majorgridlines>
+                    <e-majorticklines width="0"></e-majorticklines>
+                    <e-linestyle width="0"></e-linestyle>
+                </e-chart-primaryyaxis>
+                <e-chart-chartarea>
+                    <e-chartarea-border width="0"></e-chartarea-border></e-chart-chartarea>
+                <e-series-collection>
+                    <e-series dataSource="@ViewBag.SplineChartData" xName="day" width="3"
+                              yName="income" name="Income" type="@Syncfusion.EJ2.Charts.ChartSeriesType.Spline"></e-series>
+                    <e-series dataSource="@ViewBag.SplineChartData" xName="day" width="3"
+                              yName="expense" name="Expense" type="@Syncfusion.EJ2.Charts.ChartSeriesType.Spline"></e-series>
+                </e-series-collection>
+                <e-chart-legendsettings position="Top" alignment="Far" toggleVisibility="false">
+                    <e-legendsettings-textstyle color="#4e342e" size="1rem"></e-legendsettings-textstyle>
+                </e-chart-legendsettings>
+                <e-chart-tooltipsettings enable shared></e-chart-tooltipsettings>
+            </ejs-chart>
+        </div>
+    </div>
+</div>
+
+@*Recent Transactions and More*@
+<div class="row">
+    <div class="col-md-6">
+        <div class="widget" style="background-color: #fff3e0;">
+            <div class="p-4">
+                <h5 class="fw-bold" style="color: #ff6f00;">Recent Transactions</h5>
+            </div>
+            <div class="px-4 pb-4">
+                <ejs-grid id="recent-transactions" dataSource="@ViewBag.RecentTransactions" gridLines="None">
+                    <e-grid-columns>
+                        <e-grid-column headerText="Category" field="CategoryTitleWithIcon"></e-grid-column>
+                        <e-grid-column headerText="Amount" field="Amount" format="C2"></e-grid-column>
+                        <e-grid-column headerText="Date" field="Date" format="d" textAlign="Right"></e-grid-column>
+                    </e-grid-columns>
+                </ejs-grid>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="widget" style="background-color: #eceff1; min-height: 300px;">
+            <div class="p-4">
+                <h5 class="fw-bold" style="color: #333;">Additional Widget</h5>
+            </div>
+            <!-- Placeholder content or widget -->
+        </div>
+    </div>
+</div>
